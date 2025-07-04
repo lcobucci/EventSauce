@@ -8,16 +8,23 @@ use DateTimeImmutable;
 use RuntimeException;
 
 /**
+ * @template TPayload of object = object
  * @template TId of AggregateRootId = AggregateRootId
  */
 final class Message
 {
     public const TIME_OF_RECORDING_FORMAT = 'Y-m-d H:i:s.uO';
 
+    /**
+     * @param TPayload $payload
+     */
     public function __construct(private object $payload, private array $headers = [])
     {
     }
 
+    /**
+     * @return Message<TPayload, TId>
+     */
     public function withHeader(string $key, int|string|array|AggregateRootId|null|bool|float $value): Message
     {
         $clone = clone $this;
@@ -26,6 +33,9 @@ final class Message
         return $clone;
     }
 
+    /**
+     * @return Message<TPayload, TId>
+     */
     public function withHeaders(array $headers): Message
     {
         $clone = clone $this;
@@ -34,6 +44,9 @@ final class Message
         return $clone;
     }
 
+    /**
+     * @return Message<TPayload, TId>
+     */
     public function withTimeOfRecording(
         DateTimeImmutable $timeOfRecording,
         string $format = self::TIME_OF_RECORDING_FORMAT
@@ -95,6 +108,9 @@ final class Message
         return $this->headers;
     }
 
+    /**
+     * @return TPayload
+     */
     public function payload(): object
     {
         return $this->payload;
@@ -102,6 +118,8 @@ final class Message
 
     /**
      * @deprecated use ->payload instead
+     * 
+     * @return TPayload
      */
     public function event(): object
     {
