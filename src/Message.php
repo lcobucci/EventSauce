@@ -10,6 +10,8 @@ use RuntimeException;
 /**
  * @template TPayload of object = object
  * @template TId of AggregateRootId = AggregateRootId
+ *
+ * @phpstan-type HeadersShape array<non-empty-string, int|string|array<mixed>|AggregateRootId|null|bool|float>
  */
 final class Message
 {
@@ -17,12 +19,16 @@ final class Message
 
     /**
      * @param TPayload $payload
+     * @param HeadersShape $headers
      */
     public function __construct(private object $payload, private array $headers = [])
     {
     }
 
     /**
+     * @param non-empty-string $key
+     * @param int|string|array<mixed>|AggregateRootId|null|bool|float $value
+     *
      * @return Message<TPayload, TId>
      */
     public function withHeader(string $key, int|string|array|AggregateRootId|null|bool|float $value): Message
@@ -34,6 +40,8 @@ final class Message
     }
 
     /**
+     * @param HeadersShape $headers
+     *
      * @return Message<TPayload, TId>
      */
     public function withHeaders(array $headers): Message
@@ -45,6 +53,8 @@ final class Message
     }
 
     /**
+     * @param non-empty-string $format
+     *
      * @return Message<TPayload, TId>
      */
     public function withTimeOfRecording(
@@ -98,11 +108,19 @@ final class Message
         return $timeOfRecording;
     }
 
+    /**
+     * @param non-empty-string $key
+     *
+     * @return int|string|array<mixed>|AggregateRootId|null|bool|float
+     */
     public function header(string $key): int|string|array|AggregateRootId|null|bool|float
     {
         return $this->headers[$key] ?? null;
     }
 
+    /**
+     * @return HeadersShape
+     */
     public function headers(): array
     {
         return $this->headers;
